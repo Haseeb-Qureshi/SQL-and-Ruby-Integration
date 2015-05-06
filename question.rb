@@ -48,24 +48,4 @@ class Question < ActiveRecordBase
   def num_likes
     Like.num_likes_for_question_id(@id)
   end
-
-  def save
-    if @id
-      QuestionsDatabase.execute(<<-SQL, @title, @body, @user_id, @id)
-        UPDATE
-          '#{self.class.name.tableize}'
-        SET
-          title = ?, body = ?, user_id = ?
-        WHERE
-          id = ?;
-      SQL
-    else
-      QuestionsDatabase.execute(<<-SQL, @title, @body, @user_id)
-        INSERT INTO
-          '#{self.class.name.tableize}' (title, body, user_id)
-        VALUES
-          (?, ?, ?);
-      SQL
-    end
-  end
 end

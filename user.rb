@@ -67,24 +67,4 @@ class User < ActiveRecordBase
   def liked_questions
     Like.liked_questions_for_user_id(@id)
   end
-
-  # def save
-  #   if @id  #Update
-  #     QuestionsDatabase.execute(<<-SQL, @fname, @lname, @id)
-  #       UPDATE
-  #         '#{self.class.name.tableize}'
-  #       SET
-  #         fname = ?, lname = ?
-  #       WHERE
-  #         id = ?;
-  #     SQL
-  #   else  #insert
-  #     QuestionsDatabase.execute(<<-SQL, fname, lname)
-  #       INSERT INTO
-  #         '#{self.class.name.tableize}' (fname, lname)
-  #       VALUES
-  #         (?, ?);
-  #     SQL
-  #   end
-  # end
 end

@@ -25,7 +25,7 @@ class ActiveRecordBase
           #{lookups}
       SQL
     end
-    self.new(query_result)
+    query_result.map { |options| self.new(options) }
   end
 
   def self.find_by(id)

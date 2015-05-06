@@ -7,36 +7,20 @@ class Reply < ActiveRecordBase
     @body = options['body']
     @id = options['id']
   end
-
-
-
-  # def self.find_by_user_id(user_id)
-  #   replies = QuestionsDatabase.execute(<<-SQL, user_id)
+  #
+  # def self.find_by_question_id(question_id)
+  #   replies = Reply.new(QuestionsDatabase.execute(<<-SQL, question_id) )
   #     SELECT
   #       *
   #     FROM
   #       replies
   #     WHERE
-  #       user_id = ?
+  #       question_id = ?
   #   SQL
   #   replies.inject([]) do |all, reply|
   #     all << Reply.new(reply)
   #   end
   # end
-
-  def self.find_by_question_id(question_id)
-    replies = Reply.new(QuestionsDatabase.execute(<<-SQL, question_id) )
-      SELECT
-        *
-      FROM
-        replies
-      WHERE
-        question_id = ?
-    SQL
-    replies.inject([]) do |all, reply|
-      all << Reply.new(reply)
-    end
-  end
 
   def author
     User.find_by(@user_id)
@@ -47,7 +31,6 @@ class Reply < ActiveRecordBase
   end
 
   def child_replies
-    # TODO all first-level children
     Reply.new(QuestionsDatabase.execute(<<-SQL, @id)[0] )
       SELECT
         *
@@ -56,26 +39,6 @@ class Reply < ActiveRecordBase
       WHERE
         reply_id = ?
     SQL
-  end
-
-  def save
-    if @id  #Update
-      QuestionsDatabase.execute(<<-SQL, @question_id, @reply_id, @user_id, @body, @id)
-        UPDATE
-          '#{self.class.name.tableize}'
-        SET
-          question_id = ?, reply_id = ?, user_id = ?, body = ?
-        WHERE
-          id = ?;
-      SQL
-    else  #insert
-      QuestionsDatabase.execute(<<-SQL, @question_id, @reply_id, @user_id, @body)
-        INSERT INTO
-          '#{self.class.name.tableize}' (question_id, reply_id, user_id, body)
-        VALUES
-          (?, ?, ?, ?);
-      SQL
-    end
   end
 
 end
